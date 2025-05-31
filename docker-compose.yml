@@ -1,5 +1,9 @@
 version: "3.8"
 
+networks:
+  app-network:
+    driver: bridge
+
 services:
   frontend:
     build: ./frontend
@@ -10,6 +14,8 @@ services:
     depends_on:
       - backend
       - keycloak
+    networks:
+      - app-network
 
   backend:
     build: ./backend
@@ -21,6 +27,8 @@ services:
       - KEYCLOAK_REALM=bezpieczenstwo_projekt_realm
     depends_on:
       - keycloak
+    networks:
+      - app-network
 
   keycloak:
     image: quay.io/keycloak/keycloak:21.1.1
@@ -39,6 +47,8 @@ services:
       - keycloak_data:/opt/keycloak/data
     depends_on:
       - postgres
+    networks:
+      - app-network
 
   postgres:
     image: postgres:14
@@ -50,6 +60,8 @@ services:
       - POSTGRES_PASSWORD=password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
 
 volumes:
   keycloak_data:
