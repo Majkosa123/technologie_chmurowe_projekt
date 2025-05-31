@@ -16,7 +16,8 @@ export const AuthProvider = ({ children }) => {
           onLoad: "check-sso",
           silentCheckSsoRedirectUri:
             window.location.origin + "/silent-check-sso.html",
-          pkceMethod: "S256",
+          pkceMethod: "S256", // Teraz działa bo używamy localhost
+          checkLoginIframe: false,
         });
 
         setAuthenticated(authenticated);

@@ -6,6 +6,8 @@ const keycloakConfig = {
   clientId: process.env.REACT_APP_KEYCLOAK_CLIENT_ID || "frontend-app",
 };
 
+console.log("Keycloak config:", keycloakConfig);
+
 const keycloak = new Keycloak(keycloakConfig);
 
 export default keycloak;
