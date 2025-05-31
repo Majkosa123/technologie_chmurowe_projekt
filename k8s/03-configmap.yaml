@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: security-project
+data:
+  PORT: "5001"
+  KEYCLOAK_URL: "http://keycloak-service:8080"
+  KEYCLOAK_REALM: "bezpieczenstwo_projekt_realm"
+
+  REACT_APP_KEYCLOAK_URL: "http://localhost:8888"
+  REACT_APP_KEYCLOAK_REALM: "master"
+  REACT_APP_KEYCLOAK_CLIENT_ID: "account"
+
+  # Frontend configuration
+  REACT_APP_API_URL: "http://backend-service:5001"
+
+  # Keycloak configuration
+  KC_DB: "postgres"
+  KC_DB_URL: "jdbc:postgresql://postgres-service:5432/keycloak"
+  KC_HOSTNAME_STRICT: "false"
+  KC_HTTP_ENABLED: "true"
