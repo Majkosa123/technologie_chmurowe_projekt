@@ -2,19 +2,19 @@
 
 echo "🚀 Deploying Security Project to Kubernetes..."
 
-# Enable buildx for multiplatform builds (dla punktów)
+# utworzenie nowego builder context z multiplatform
 docker buildx create --use &> /dev/null || true
 
-# Build Docker images with proper build args
+#budowanie obrazow docker z odpowiednimi argumentami
 echo "📦 Building Docker images..."
 
-# Build backend (multiplatform dla 5 punktów dodatkowych)
+# Budowanie backendu
 echo "Building backend..."
 docker buildx build --platform linux/amd64,linux/arm64 \
   -t security-project/backend:latest \
   --load ./backend
 
-# Build frontend for localhost (POPRAWIONE!)
+# budowanie backendu dla localhost
 echo "Building frontend for localhost..."
 docker buildx build --platform linux/amd64,linux/arm64 \
   --build-arg REACT_APP_KEYCLOAK_URL="http://localhost:8080" \
@@ -69,7 +69,7 @@ echo "✅ Backend deployed"
 kubectl apply -f k8s/07-frontend.yaml
 echo "✅ Frontend deployed"
 
-# POPRAWIONE - ustaw poprawny obraz frontend!
+# poprawny obraz frontend!
 kubectl set image deployment/frontend-deployment frontend=security-project/frontend:localhost -n security-project
 echo "✅ Frontend image updated to localhost version"
 
@@ -105,8 +105,8 @@ echo "   Keycloak Admin: http://localhost:8080/admin (admin/admin)"
 echo "   Backend API:    http://localhost:5001"
 echo ""
 echo "👤 Dane logowania:"
-echo "   Username: testuser"
-echo "   Password: password"
+echo "   Username: user"
+echo "   Password: haslo"
 echo ""
 echo "🔧 Status aplikacji:"
 kubectl get pods -n security-project
