@@ -24,20 +24,21 @@ docker buildx build --platform linux/amd64,linux/arm64 \
   -t security-project/frontend:localhost \
   --load ./frontend
 
-# Load images to minikube (POPRAWIONE nazwy obrazów!)
+
+#ładowanie obrazów do minikube
 if command -v minikube &> /dev/null; then
     echo "📋 Loading images to minikube..."
     minikube image load security-project/frontend:localhost
     minikube image load security-project/backend:latest
 fi
 
-# Enable ingress addon PRZED deploymentem
+#  ingress addon PRZED deploymentem
 if command -v minikube &> /dev/null; then
     echo "🔌 Enabling minikube ingress addon..."
     minikube addons enable ingress
 fi
 
-# Apply Kubernetes manifests in order
+#manifesty kubernetes w kolejnosci 
 echo "🔧 Applying Kubernetes manifests..."
 
 kubectl apply -f k8s/01-namespace.yaml
@@ -52,14 +53,14 @@ echo "✅ ConfigMap created"
 kubectl apply -f k8s/04-postgres.yaml
 echo "✅ PostgreSQL deployed"
 
-# Wait for postgres to be ready
+# czekam na postgre 
 echo "⏳ Waiting for PostgreSQL to be ready..."
 kubectl wait --for=condition=ready pod -l app=postgres -n security-project --timeout=60s
 
 kubectl apply -f k8s/05-keycloak.yaml
 echo "✅ Keycloak deployed"
 
-# Wait for keycloak to be ready
+# czekam na keycloack
 echo "⏳ Waiting for Keycloak to be ready..."
 kubectl wait --for=condition=ready pod -l app=keycloak -n security-project --timeout=180s
 
@@ -69,14 +70,14 @@ echo "✅ Backend deployed"
 kubectl apply -f k8s/07-frontend.yaml
 echo "✅ Frontend deployed"
 
-# poprawny obraz frontend!
+# poprawny obraz frontend
 kubectl set image deployment/frontend-deployment frontend=security-project/frontend:localhost -n security-project
 echo "✅ Frontend image updated to localhost version"
 
 kubectl apply -f k8s/08-ingress.yaml
 echo "✅ Ingress configured"
 
-# Dodaj HPA dla punktów
+
 kubectl apply -f k8s/09-hpa.yaml &> /dev/null || echo "⚠️ HPA not applied (metrics-server may not be available)"
 echo "✅ HPA configured (if metrics-server available)"
 
@@ -88,12 +89,12 @@ echo "🌐 Uruchamianie port-forward dla localhost..."
 # Kill previous port-forwards
 pkill -f "kubectl port-forward" &> /dev/null || true
 
-# Start port-forwards automatically
+# Start port-forwards automatycznie
 kubectl port-forward -n security-project service/frontend-service 3000:80 &> /dev/null &
 kubectl port-forward -n security-project service/keycloak-service 8080:8080 &> /dev/null &
 kubectl port-forward -n security-project service/backend-service 5001:5001 &> /dev/null &
 
-# Wait for port-forwards to establish
+# czekaj na port-forwards 
 sleep 3
 
 echo ""
